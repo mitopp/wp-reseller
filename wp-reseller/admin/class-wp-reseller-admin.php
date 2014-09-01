@@ -72,8 +72,9 @@ if ( ! class_exists( 'WP_Reseller_Admin' ) )
             add_filter( 'pre_site_transient_update_plugins', array( $this, 'filter_update_notifications' ) );
             add_filter( 'pre_site_transient_update_themes', array( $this, 'filter_update_notifications' ) );
 
-            // Disable admin menus
+            // Admin menus and bar
             add_action( 'admin_menu', array( $this, 'filter_admin_menus' ) );
+            add_action( 'wp_before_admin_bar_render', array( $this, 'filter_admin_bar' ) );
         }
         /**
          * Return an instance of this class.
@@ -230,6 +231,23 @@ if ( ! class_exists( 'WP_Reseller_Admin' ) )
                 remove_menu_page( 'users.php' );
                 remove_menu_page( 'options-general.php' );
             }
+        }
+        /**
+         * Filter items in admin bar.
+         * @access  public
+         * @since   0.0.1
+         * @global  object      $wp_admin_bar
+         * @return  void
+         */
+        public function filter_admin_bar()
+        {
+            global $wp_admin_bar;
+
+            $wp_admin_bar->remove_menu( 'updates' );
+            $wp_admin_bar->remove_menu( 'wp-logo' );
+            $wp_admin_bar->remove_menu( 'appearance' );
+
+            $wp_admin_bar->remove_node( 'new-user' );
         }
     }
 }

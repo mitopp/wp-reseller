@@ -10,7 +10,7 @@
  * @wordpress-plugin
  * Plugin Name:       WP Reseller
  * Description:       Hide update notifications and unused admin options.
- * Version:           0.0.1
+ * Version:           0.0.2
  * Author:            Michael Topp
  * Author URI:        http://codeschubser.de
  * Text Domain:       wp-reseller

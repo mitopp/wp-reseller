@@ -65,7 +65,6 @@ if ( ! class_exists( 'WP_Reseller_Security' ) )
 
             return self::$instance;
         }
-
         /**
          * Remove the WordPress version from RSS feed.
          * @static
@@ -90,6 +89,18 @@ if ( ! class_exists( 'WP_Reseller_Security' ) )
         public static function filter_remove_generator()
         {
             return;
+        }
+        /**
+         * Hide login errors.
+         * @static
+         * @access  public
+         * @since   0.0.1
+         * @return  function
+         */
+        public static function filter_login_errors()
+        {
+            echo '<style type="text/css">#login_error{display:none!important;visibility:hidden!important}</style>';
+            return create_function( '$a', "return null;" );
         }
     }
 }

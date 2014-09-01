@@ -26,7 +26,7 @@ if ( ! class_exists( 'WP_Reseller' ) )
          * @since   0.0.1
          * @var     string
          */
-        const VERSION = '0.0.1';
+        const VERSION = '0.0.2';
         /**
          * Unique identifier for your plugin.
          * The variable name is used as the text domain when internationalizing strings
@@ -69,6 +69,10 @@ if ( ! class_exists( 'WP_Reseller' ) )
             add_filter( 'the_generator', array( 'WP_Reseller_Security', 'filter_remove_generator' ), 9999 );
             add_filter( 'style_loader_src', array( 'WP_Reseller_Security', 'filter_remove_version' ), 9999 );
             add_filter( 'script_loader_src', array( 'WP_Reseller_Security', 'filter_remove_version' ), 9999 );
+            add_filter( 'login_errors', array( 'WP_Reseller_Security', 'filter_login_errors' ), 9999 );
+
+            // Change admin bar and backend
+            add_action( 'admin_head', array( $this, 'hide_help' ) );
         }
         /**
          * Return the plugin slug.
@@ -275,6 +279,29 @@ if ( ! class_exists( 'WP_Reseller' ) )
                 self::VERSION,
                 true
             );
+        }
+        /**
+         * Remove the WordPress logo from admin bar.
+         * @deprecated 0.0.2
+         * @access  public
+         * @since   0.0.1
+         * @global  object      $wp_admin_bar
+         * @return  void
+         */
+        public function remove_wordpress_logo_from_admin_bar()
+        {
+            _deprecated_function( __FUNCTION__ , '0.0.2', 'WP_Reseller_Admin::filter_admin_bar()' );
+        }
+        /**
+         * Hide help link in admin.
+         * @static
+         * @access  public
+         * @since   0.0.1
+         * @return  void
+         */
+        public static function hide_help()
+        {
+            echo '<style type="text/css">#contextual-help-link-wrap{display:none!important}</style>';
         }
     }
 }
