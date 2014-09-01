@@ -17,6 +17,8 @@
  */
 if ( ! class_exists( 'WP_Reseller' ) )
 {
+    require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-reseller-security.php' );
+
     class WP_Reseller
     {
         /**
@@ -63,10 +65,10 @@ if ( ! class_exists( 'WP_Reseller' ) )
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
             add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-            // Remove generator version from head and source files
-            add_filter( 'the_generator', '__return_null' );
-            add_filter( 'style_loader_src', array( $this, 'filter_remove_version' ), 9999 );
-            add_filter( 'script_loader_src', array( $this, 'filter_remove_version' ), 9999 );
+            // Security filters and actions
+            add_filter( 'the_generator', array( 'WP_Reseller_Security', 'filter_remove_generator' ), 9999 );
+            add_filter( 'style_loader_src', array( 'WP_Reseller_Security', 'filter_remove_version' ), 9999 );
+            add_filter( 'script_loader_src', array( 'WP_Reseller_Security', 'filter_remove_version' ), 9999 );
         }
         /**
          * Return the plugin slug.
@@ -273,19 +275,6 @@ if ( ! class_exists( 'WP_Reseller' ) )
                 self::VERSION,
                 true
             );
-        }
-        /**
-         * Remove the WordPress version from RSS feed
-         * @access  public
-         * @since   0.0.1
-         * @param   string      $src
-         * @return  string
-         */
-        public function filter_remove_version( $src )
-        {
-            if ( strpos( $src, 'ver=' . get_bloginfo( 'version' ) ) )
-                $src = remove_query_arg( 'ver', $src );
-            return $src;
         }
     }
 }

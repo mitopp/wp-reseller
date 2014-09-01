@@ -64,8 +64,16 @@ if ( ! class_exists( 'WP_Reseller_Admin' ) )
             $plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
             add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
 
-            // Define custom functionality.
+            // Add plugin text to admin footer
             add_action( 'admin_footer_text', array( $this, 'action_admin_footer' ) );
+
+            // Disable update notifications
+            add_filter( 'pre_site_transient_update_core', array( $this, 'filter_update_notifications' ) );
+            add_filter( 'pre_site_transient_update_plugins', array( $this, 'filter_update_notifications' ) );
+            add_filter( 'pre_site_transient_update_themes', array( $this, 'filter_update_notifications' ) );
+
+            // Disable admin menus
+            add_action( 'admin_menu', array( $this, 'filter_admin_menus' ) );
         }
         /**
          * Return an instance of this class.
@@ -190,6 +198,38 @@ if ( ! class_exists( 'WP_Reseller_Admin' ) )
         public function action_admin_footer()
         {
             echo '<span id="footer-thankyou">Danke für das Vertrauen in <a href="https://wordpress.org/">WordPress</a>. | Customized with WP Reseller Version ' . WP_Reseller::VERSION . '</span>';
+        }
+        /**
+         * Filter the update notifications for core, plugins and themes.
+         * @access  public
+         * @since   0.0.1
+         * @global  string      $wp_version
+         * @return  object
+         */
+        public function filter_update_notifications()
+        {
+            global $wp_version;
+            return (object)array(
+                'last_checked' => time(),
+                'version_checked' => $wp_version
+            );
+        }
+        /**
+         * Filter menu items for non admins.
+         * @access  public
+         * @since   0.0.1
+         * @return  void
+         */
+        public function filter_admin_menus()
+        {
+            if ( ! is_admin() )
+            {
+                remove_menu_page( 'themes.php' );
+                remove_menu_page( 'plugins.php' );
+                remove_menu_page( 'tools.php' );
+                remove_menu_page( 'users.php' );
+                remove_menu_page( 'options-general.php' );
+            }
         }
     }
 }
